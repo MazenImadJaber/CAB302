@@ -8,8 +8,7 @@ import java.awt.event.ActionListener;
 public class gui extends JFrame implements ActionListener, Runnable{
     public static final int WIDTH = 300;
     public static final int HEIGHT = 300;
-    private JPanel pnlDisplay, pnlEast, pnlUp, pnlWest, pnlBtn;
-    private Graphics g;
+    private JPanel pnlDisplay, pnlEast, pnlUp, pnlWest, pnlBtn, pnlshape;
 
     public gui(String title) throws HeadlessException {
         super(title);
@@ -35,15 +34,22 @@ public class gui extends JFrame implements ActionListener, Runnable{
         pnlUp = createPanel(Color.lightGray);
         pnlWest = createPanel(Color.lightGray);
         pnlBtn = createPanel(Color.lightGray);
+        Shape s =new Shape();
+
+
         getContentPane().add(pnlDisplay,BorderLayout.CENTER);
         getContentPane().add(pnlEast,BorderLayout.EAST);
         getContentPane().add(pnlUp,BorderLayout.NORTH);
         getContentPane().add(pnlWest,BorderLayout.WEST);
         getContentPane().add(pnlBtn,BorderLayout.SOUTH);
-        g.drawLine(0,0,10,10);
+        getContentPane().add(s,BorderLayout.CENTER);
 
-        repaint();
+
+
+
         setVisible(true);
+        repaint();
+
     }
 
     private JPanel createPanel(Color c) {
