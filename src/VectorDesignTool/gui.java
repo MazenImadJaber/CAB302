@@ -35,6 +35,8 @@ public class gui extends JFrame implements ActionListener, Runnable{
         pnlWest = createPanel(Color.lightGray);
         pnlBtn = createPanel(Color.lightGray);
         Shape s =new Shape();
+        ChooseFile chsr = new ChooseFile();
+
 
 
         getContentPane().add(pnlDisplay,BorderLayout.CENTER);
@@ -43,6 +45,8 @@ public class gui extends JFrame implements ActionListener, Runnable{
         getContentPane().add(pnlWest,BorderLayout.WEST);
         getContentPane().add(pnlBtn,BorderLayout.SOUTH);
         getContentPane().add(s,BorderLayout.CENTER);
+        getContentPane().add(chsr, BorderLayout.NORTH);
+
 
 
 
@@ -61,10 +65,6 @@ public class gui extends JFrame implements ActionListener, Runnable{
         return pan;
     }
 
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(new gui("BorderLayout"));
 
-
-    }
 }
 
