@@ -52,15 +52,16 @@ public class ChooseFile extends JPanel implements ActionListener
         if (filChsr.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
         {
 
-             dirr += filChsr.getCurrentDirectory();
-           file= filChsr.getSelectedFile();
-           filName = file.getName();
+            dirr += filChsr.getCurrentDirectory();
+            file= filChsr.getSelectedFile();
+            filName = file.getName();
 
 
-             System.out.println(dirr);
+            System.out.println(dirr);
             System.out.println(filName);
             try {
                 FileReader flReader = new FileReader(file);
+
             } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
             } catch (Exception e1) {
@@ -71,10 +72,13 @@ public class ChooseFile extends JPanel implements ActionListener
 
         }
         else
-            {
+        {
             System.out.println("No Selection ");
-            }
-    }
+        }
 
     }
+
+
+
+}
 

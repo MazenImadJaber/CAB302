@@ -15,9 +15,9 @@ public class FileReader {
         while(scan.hasNextLine())
         {
             String line = scan.nextLine().toString();
-             System.out.println(line);
+            // System.out.println(line);
             String[] a = (line.split(" "));
-            System.out.println(a.toString());
+           // System.out.println(a.toString());
            content.add( a);
         }
 
