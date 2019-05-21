@@ -22,11 +22,12 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
     String choosertitle;
     FileReader flReader;
     File file;
-    JButton OpenBtn,plotbtn, saveAsBrn;
+    JButton OpenBtn,plotbtn, saveAsBrn,linebtn, rectbtn,elipsbtn;
     Graphics g;
-    boolean plot = false;
+    boolean plot,line,rect,elipse = false;
     int xoffset = 0;
     int yoffset = 0;
+    int x1,y1;
 
     public gui(String title) throws HeadlessException {
         super(title);
@@ -66,6 +67,10 @@ if (buttonString.equals(OpenBtn.getText()))
                 s.paintComponent(g);
                 plotbtn.setEnabled(true);
                 saveAsBrn.setEnabled(true);
+                plotbtn.doClick();
+                linebtn.setEnabled(true);
+                rectbtn.setEnabled(true);
+                elipsbtn.setEnabled(true);
 
 
             } catch (FileNotFoundException e1) {
@@ -84,8 +89,47 @@ if (buttonString.equals(OpenBtn.getText()))
 }
 else if (buttonString.equals(plotbtn.getText()))
 {
+    plotbtn.setBackground(Color.white);
+    linebtn.setBackground(Color.gray);
+    rectbtn.setBackground(Color.gray);
+    elipsbtn.setBackground(Color.gray);
     plot = true;
-
+    line = false;
+    rect = false;
+    elipse = false;
+}
+else if (buttonString.equals(linebtn.getText()))
+{
+    plotbtn.setBackground(Color.gray);
+    linebtn.setBackground(Color.white);
+    rectbtn.setBackground(Color.gray);
+    elipsbtn.setBackground(Color.gray);
+    plot = false;
+    line = true;
+    rect = false;
+    elipse = false;
+}
+else if (buttonString.equals(rectbtn.getText()))
+{
+    plotbtn.setBackground(Color.gray);
+    linebtn.setBackground(Color.gray);
+    rectbtn.setBackground(Color.white);
+    elipsbtn.setBackground(Color.gray);
+    plot = false;
+    line = false;
+    rect = true;
+    elipse = false;
+}
+else if (buttonString.equals(elipsbtn.getText()))
+{
+    plotbtn.setBackground(Color.gray);
+    linebtn.setBackground(Color.gray);
+    rectbtn.setBackground(Color.gray);
+    elipsbtn.setBackground(Color.white);
+    plot = false;
+    line = false;
+    rect = false;
+    elipse = true;
 }
 else if (buttonString.equals(saveAsBrn.getText()))
 {
@@ -271,11 +315,25 @@ else if (buttonString.equals(saveAsBrn.getText()))
         OpenBtn = new JButton("Select file");
         plotbtn = new JButton("Plot");
         saveAsBrn= new JButton("Save as..");
+        linebtn = new JButton("LINE");
+        rectbtn = new JButton("RECTANGLE");
+        elipsbtn = new JButton("Ellipse");
         OpenBtn.addActionListener(this);
         saveAsBrn.addActionListener(this);
         plotbtn.addActionListener(this);
-        plotbtn.setEnabled(false);
+       linebtn.addActionListener(this);
+        rectbtn.addActionListener(this);
+        elipsbtn.addActionListener(this);
         saveAsBrn.setEnabled(false);
+        linebtn.setEnabled(false);
+        rectbtn.setEnabled(false);
+        plotbtn.setEnabled(false);
+        elipsbtn.setEnabled(false);
+        linebtn.setBackground(Color.gray);
+        plotbtn.setBackground(Color.gray);
+        rectbtn.setBackground(Color.gray);
+        elipsbtn.setBackground(Color.gray);
+
 
 
 
@@ -287,9 +345,11 @@ else if (buttonString.equals(saveAsBrn.getText()))
         pnlDisplay.add(s);
         pnlUp.add(OpenBtn);
         pnlUp.add(saveAsBrn);
-
+        pnlWest.setLayout(new BoxLayout(pnlWest,BoxLayout.Y_AXIS));
         pnlWest.add(plotbtn);
-
+        pnlWest.add(linebtn);
+        pnlWest.add(rectbtn);
+        pnlWest.add(elipsbtn);
 
 
 
@@ -318,6 +378,24 @@ else if (buttonString.equals(saveAsBrn.getText()))
     @Override
     public void mouseClicked(MouseEvent e) {
 
+
+        if (plot){
+            String[] line = new String[3];
+            line[0]="PLOT";
+            double x = e.getX();
+            x/= WIDTH;
+            double y = e.getY();
+            y/=HEIGHT;
+
+            line[1]=  String.format("%.5f", x);
+            line[2]=  String.format("%.5f", y);
+            content.add(line);
+            g = makeGraphics(content);
+            s.paintComponent(g);
+            //System.out.println(content);
+
+        }
+
     }
 
     /**
@@ -327,25 +405,11 @@ else if (buttonString.equals(saveAsBrn.getText()))
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println(e.getX());
-        System.out.println("\n" + e.getY());
-
-        if (plot){
-            String[] line = new String[3];
-          line[0]="PLOT";
-         double x = e.getX();
-               x/= WIDTH;
-         double y = e.getY();
-                 y/=HEIGHT;
-
-            line[1]=  String.format("%.5f", x);
-            line[2]=  String.format("%.5f", y);
-            content.add(line);
-            Graphics g1 =pnlDisplay.getGraphics();
-                  g1.fillRect(e.getX(),e.getY(),1,1);
-            s.paintComponent(g1);
-            //System.out.println(content);
-        }
+         x1 = e.getX();
+      //  x/= WIDTH;
+         y1 = e.getY();
+       // y/=HEIGHT;
+        System.out.println(e);
     }
 
     /**
@@ -355,7 +419,55 @@ else if (buttonString.equals(saveAsBrn.getText()))
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        System.out.println(e);
+
+        if (line){
+            String[] line = new String[5];
+            line[0]= "LINE";
+            int x2 = e.getX();
+            int y2 = e.getY();
+//
+
+
+            line[1]=  String.format("%.5f", (double)x1/WIDTH);
+            line[2]=  String.format("%.5f", (double)y1/HEIGHT);
+            line[3]=  String.format("%.5f", (double)x2/WIDTH);
+            line[4]=  String.format("%.5f", (double)y2/HEIGHT);
+            content.add(line);
+            g = makeGraphics(content);
+            s.paintComponent(g);
+        }else  if (rect){
+            String[] line = new String[5];
+            line[0]= "RECTANGLE";
+            int x2 = e.getX();
+            int y2 = e.getY();
+//
+
+
+            line[1]=  String.format("%.5f", (double)x1/WIDTH);
+            line[2]=  String.format("%.5f", (double)y1/HEIGHT);
+            line[3]=  String.format("%.5f", (double)x2/WIDTH);
+            line[4]=  String.format("%.5f", (double)y2/HEIGHT);
+            content.add(line);
+            g = makeGraphics(content);
+            s.paintComponent(g);
+        }else  if (elipse){
+            String[] line = new String[5];
+            line[0]= "ELLIPSE";
+            int x2 = e.getX();
+            int y2 = e.getY();
+//
+
+
+            line[1]=  String.format("%.5f", (double)x1/WIDTH);
+            line[2]=  String.format("%.5f", (double)y1/HEIGHT);
+            line[3]=  String.format("%.5f", (double)x2/WIDTH);
+            line[4]=  String.format("%.5f", (double)y2/HEIGHT);
+            content.add(line);
+            g = makeGraphics(content);
+            s.paintComponent(g);
+        }
+
+
 
     }
 
