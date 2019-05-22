@@ -2,7 +2,6 @@ package VectorDesignTool;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,11 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class gui extends JFrame implements ActionListener, MouseListener, ComponentListener, UndoableEditListener,Runnable{
+public class gui extends JFrame implements ActionListener, MouseListener, ComponentListener,Runnable{
     public static int WIDTH = 700;
     public static int HEIGHT = 700;
     List<String[]> content;
-    private JPanel pnlDisplay, pnlEast, pnlUp, pnlWest, pnlBtn, pnlshape;
+    private JPanel pnlDisplay, pnlEast, pnlUp, pnlWest, pnlDown;
     Shape s;
     public String dirr ="";
     public  String filName="";
@@ -27,7 +26,7 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
     File file;
     JButton OpenBtn, plotBtn, saveAsBrn,linebtn, rectBtn, elipsBtn, ployBtn, unDoBtn,fillBtn,penBtn,noFillBtn;
     Graphics g;
-    boolean plot,line,rect,elipse, ploy, fill,pen = false;
+    boolean plot,line,rect,elipse, ploy = false;
     int xoffset = 0;
     int yoffset = 0;
     int x1,y1;
@@ -35,7 +34,7 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
     List<Double> pPoints = new ArrayList<Double>();
 
 
-    public gui(String title) throws HeadlessException {
+    public gui(String title)  {
         super(title);
     }
 
@@ -45,7 +44,7 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
         System.out.println(e.getActionCommand());
 if (buttonString.equals(OpenBtn.getText()))
 {
-        System.out.println("Select file Clicked");
+
         filChsr = new JFileChooser();
         filChsr.setCurrentDirectory(new java.io.File("."));
         filChsr.setDialogTitle(choosertitle);
@@ -285,22 +284,26 @@ else if (buttonString.equals((noFillBtn.getText())))
                 int y1 = (int)(Double.parseDouble(line[2])*(HEIGHT-yoffset));
                 int x2 = (int)(Double.parseDouble(line[3])*(WIDTH-xoffset));
                 int y2 = (int)(Double.parseDouble(line[4])*(HEIGHT-yoffset));
-                int x = x1;
+                int x=x1;
+                int y=y1;
                 if (x1>x2){
                     x= x2;
+                }
+                if (y1>y2){
+                    y= y2;
                 }
 
 
                 if (fill!= null)
                 {
                     g.setColor(fill);
-                    g.fillOval(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                    g.fillOval(x,y,Math.abs(x2-x1),Math.abs(y2-y1));
                 }
                 if (outline!= null)
                 {
                     g.setColor(outline);
                 }
-                g.drawOval(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                g.drawOval(x,y,Math.abs(x2-x1),Math.abs(y2-y1));
 
             }
             else if (line[0].equals("PLOT"))
@@ -318,21 +321,25 @@ else if (buttonString.equals((noFillBtn.getText())))
                 int x2 = (int)(Double.parseDouble(line[3])*(WIDTH-xoffset));
                 int y2 = (int)(Double.parseDouble(line[4])*(HEIGHT-yoffset));
                 int x=x1;
+                int y=y1;
                 if (x1>x2){
                    x= x2;
                 }
+                if (y1>y2){
+                    y= y2;
+                }
 
-                int y=(y1+y2)/2;
+
 
                 if (fill!= null){
                     g.setColor(fill);
-                    g.fillRect(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                    g.fillRect(x,y,Math.abs(x2-x1),Math.abs(y2-y1));
                 }
                 if (outline!= null){
                     g.setColor(outline);
                 }
 
-                g.drawRect(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                g.drawRect(x,y,Math.abs(x2-x1),Math.abs(y2-y1));
             }
             else if (line[0].equals("POLYGON"))
             {
@@ -384,6 +391,7 @@ else if (buttonString.equals((noFillBtn.getText())))
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         s=new Shape();
+
         txt = new JLabel("Right click Mouse to draw polygon");
         txt.setBackground(Color.red);
        txt.setVisible(false);
@@ -408,13 +416,13 @@ else if (buttonString.equals((noFillBtn.getText())))
         pnlEast = createPanel(Color.lightGray);
         pnlUp = createPanel(Color.lightGray);
         pnlWest = createPanel(Color.gray);
-        pnlBtn = createPanel(Color.lightGray);
+        pnlDown = createPanel(Color.lightGray);
         getContentPane().add(pnlDisplay,BorderLayout.CENTER);
         getContentPane().add(pnlEast,BorderLayout.EAST);
         getContentPane().add(pnlUp,BorderLayout.NORTH);
         getContentPane().add(pnlWest,BorderLayout.WEST);
-        getContentPane().add(pnlBtn,BorderLayout.SOUTH);
-        pnlBtn.add(txt);
+        getContentPane().add(pnlDown,BorderLayout.SOUTH);
+        pnlDown.add(txt);
     }
 
     private void setUpButtons() {
@@ -523,6 +531,7 @@ else if (buttonString.equals((noFillBtn.getText())))
             if (e.getButton()==1){
                 pPoints.add(x);
                 pPoints.add(y);
+                txt.setText("Right click Mouse to draw polygon, number of points: "+pPoints.size()/2);
             }
             else if (e.getButton()==3){
                 String[] line = new String[pPoints.size()+1];
@@ -556,10 +565,10 @@ else if (buttonString.equals((noFillBtn.getText())))
     public void mousePressed(MouseEvent e) {
 
          x1 = e.getX();
-      //  x/= WIDTH;
+
          y1 = e.getY();
-       // y/=HEIGHT;
-        System.out.println(e);
+
+
     }
 
     /**
@@ -648,7 +657,7 @@ else if (buttonString.equals((noFillBtn.getText())))
      */
     @Override
     public void componentResized(ComponentEvent e) {
-        System.out.println();
+
 
        HEIGHT = pnlDisplay.getSize().height;
         WIDTH = pnlDisplay.getSize().width;
@@ -691,15 +700,7 @@ else if (buttonString.equals((noFillBtn.getText())))
     }
 
 
-    /**
-     * An undoable edit happened
-     *
-     * @param e an {@code UndoableEditEvent} object
-     */
-    @Override
-    public void undoableEditHappened(UndoableEditEvent e) {
-        System.out.println(e);
 
-    }
+
 }
 
