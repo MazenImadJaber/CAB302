@@ -4,7 +4,11 @@ import javax.swing.*;
 
 public class main {
     public static void main(String[] args){
-        SwingUtilities.invokeLater(new gui("BorderLayout"));
+        try {
+            SwingUtilities.invokeLater(new gui("BorderLayout"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }

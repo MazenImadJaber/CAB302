@@ -1,6 +1,8 @@
 package VectorDesignTool;
 
 import javax.swing.*;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,9 +10,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class gui extends JFrame implements ActionListener, MouseListener, ComponentListener, Runnable{
+public class gui extends JFrame implements ActionListener, MouseListener, ComponentListener, UndoableEditListener,Runnable{
     public static int WIDTH = 700;
     public static int HEIGHT = 700;
     List<String[]> content;
@@ -22,12 +25,15 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
     String choosertitle;
     FileReader flReader;
     File file;
-    JButton OpenBtn,plotbtn, saveAsBrn,linebtn, rectbtn,elipsbtn;
+    JButton OpenBtn, plotBtn, saveAsBrn,linebtn, rectBtn, elipsBtn, ployBtn, unDoBtn,fillBtn,penBtn,noFillBtn;
     Graphics g;
-    boolean plot,line,rect,elipse = false;
+    boolean plot,line,rect,elipse, ploy, fill,pen = false;
     int xoffset = 0;
     int yoffset = 0;
     int x1,y1;
+    JLabel txt ;
+    List<Double> pPoints = new ArrayList<Double>();
+
 
     public gui(String title) throws HeadlessException {
         super(title);
@@ -65,12 +71,16 @@ if (buttonString.equals(OpenBtn.getText()))
                 g = makeGraphics(content);
 
                 s.paintComponent(g);
-                plotbtn.setEnabled(true);
+                plotBtn.setEnabled(true);
                 saveAsBrn.setEnabled(true);
-                plotbtn.doClick();
+                plotBtn.doClick();
                 linebtn.setEnabled(true);
-                rectbtn.setEnabled(true);
-                elipsbtn.setEnabled(true);
+                rectBtn.setEnabled(true);
+                elipsBtn.setEnabled(true);
+                ployBtn.setEnabled(true);
+                penBtn.setEnabled(true);
+                fillBtn.setEnabled(true);
+                unDoBtn.setEnabled(true);
 
 
             } catch (FileNotFoundException e1) {
@@ -87,12 +97,13 @@ if (buttonString.equals(OpenBtn.getText()))
             System.out.println("No Selection ");
         }
 }
-else if (buttonString.equals(plotbtn.getText()))
+else if (buttonString.equals(plotBtn.getText()))
 {
-    plotbtn.setBackground(Color.white);
+    plotBtn.setBackground(Color.white);
     linebtn.setBackground(Color.gray);
-    rectbtn.setBackground(Color.gray);
-    elipsbtn.setBackground(Color.gray);
+    rectBtn.setBackground(Color.gray);
+    elipsBtn.setBackground(Color.gray);
+    txt.setVisible(false);
     plot = true;
     line = false;
     rect = false;
@@ -100,36 +111,62 @@ else if (buttonString.equals(plotbtn.getText()))
 }
 else if (buttonString.equals(linebtn.getText()))
 {
-    plotbtn.setBackground(Color.gray);
+    plotBtn.setBackground(Color.gray);
     linebtn.setBackground(Color.white);
-    rectbtn.setBackground(Color.gray);
-    elipsbtn.setBackground(Color.gray);
+    rectBtn.setBackground(Color.gray);
+    elipsBtn.setBackground(Color.gray);
+    ployBtn.setBackground(Color.gray);
+    txt.setVisible(false);
     plot = false;
     line = true;
     rect = false;
     elipse = false;
+    ploy = false;
 }
-else if (buttonString.equals(rectbtn.getText()))
+else if (buttonString.equals(rectBtn.getText()))
 {
-    plotbtn.setBackground(Color.gray);
+    plotBtn.setBackground(Color.gray);
     linebtn.setBackground(Color.gray);
-    rectbtn.setBackground(Color.white);
-    elipsbtn.setBackground(Color.gray);
+    rectBtn.setBackground(Color.white);
+    elipsBtn.setBackground(Color.gray);
+    ployBtn.setBackground(Color.gray);
+    txt.setVisible(false);
     plot = false;
     line = false;
     rect = true;
     elipse = false;
+    ploy = false;
+
 }
-else if (buttonString.equals(elipsbtn.getText()))
+else if (buttonString.equals(elipsBtn.getText()))
 {
-    plotbtn.setBackground(Color.gray);
+    plotBtn.setBackground(Color.gray);
     linebtn.setBackground(Color.gray);
-    rectbtn.setBackground(Color.gray);
-    elipsbtn.setBackground(Color.white);
+    rectBtn.setBackground(Color.gray);
+    elipsBtn.setBackground(Color.white);
+    ployBtn.setBackground(Color.gray);
+    txt.setVisible(false);
     plot = false;
     line = false;
     rect = false;
     elipse = true;
+    ploy = false;
+}
+else if (buttonString.equals(ployBtn.getText()))
+{
+
+   txt.setVisible(true);
+    plotBtn.setBackground(Color.gray);
+    linebtn.setBackground(Color.gray);
+    rectBtn.setBackground(Color.gray);
+    elipsBtn.setBackground(Color.gray);
+    ployBtn.setBackground(Color.white);
+
+    plot = false;
+    line = false;
+    rect = false;
+    elipse = false;
+    ploy = true;
 }
 else if (buttonString.equals(saveAsBrn.getText()))
 {
@@ -154,20 +191,58 @@ else if (buttonString.equals(saveAsBrn.getText()))
     } catch (IOException e1) {
         e1.printStackTrace();
     }
-//
-//    for (String[] line : content){
-//        String l ="";
-//        for (int i =0; i<line.length; i++){
-//            l += line[i] +" ";
-//
-//        }
-//        System.out.println(l);
-//    }
 
+}
+else if (buttonString.equals((unDoBtn.getText())))
+{
+    content.remove(content.size()-1);
+    g = makeGraphics(content);
+    s.paintComponent(g);
+}
+else if(buttonString.equals((penBtn.getText())))
+{
+    penBtn.setBackground(Color.white);
+    JColorChooser jcc = new JColorChooser();
+    JDialog co = JColorChooser.createDialog(null, "Pick A Color",true,jcc,this,null);
+    co.setVisible(true);
+    Color c = jcc.getColor();
+    String[] line = new String[2];
+    line[0]="PEN";
+    System.out.println(String.format("#%06x", c.getRGB() & 0x00FFFFFF));
+   line[1]= String.format("#%06x", c.getRGB() & 0x00FFFFFF);
+   content.add(line);
+   penBtn.setBackground(Color.gray);
 
+}
+else if(buttonString.equals((fillBtn.getText())))
+{
+    fillBtn.setBackground(Color.white);
+    JColorChooser jcc = new JColorChooser();
+    JDialog co = JColorChooser.createDialog(null, "Pick A Color",true,jcc,this,null);
+    co.setVisible(true);
+    Color c = jcc.getColor();
+    String[] line = new String[2];
+    line[0]="FILL";
+    System.out.println(String.format("#%06x", c.getRGB() & 0x00FFFFFF));
+    line[1]= String.format("#%06x", c.getRGB() & 0x00FFFFFF);
+    content.add(line);
+    fillBtn.setBackground(Color.gray);
+    noFillBtn.setEnabled(true);
 
 
 }
+else if (buttonString.equals((noFillBtn.getText())))
+{
+    noFillBtn.setBackground(Color.white);
+    String[] line = new String[2];
+    line[0]="FILL";
+       line[1]= "OFF";
+    content.add(line);
+    noFillBtn.setBackground(Color.gray);
+    noFillBtn.setEnabled(false);
+}
+
+
 
     }
 
@@ -210,19 +285,22 @@ else if (buttonString.equals(saveAsBrn.getText()))
                 int y1 = (int)(Double.parseDouble(line[2])*(HEIGHT-yoffset));
                 int x2 = (int)(Double.parseDouble(line[3])*(WIDTH-xoffset));
                 int y2 = (int)(Double.parseDouble(line[4])*(HEIGHT-yoffset));
-                int x=(x1+x2)/2;
-                int y=(y1+y2)/2;
+                int x = x1;
+                if (x1>x2){
+                    x= x2;
+                }
+
 
                 if (fill!= null)
                 {
                     g.setColor(fill);
-                    g.fillOval(x1,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                    g.fillOval(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
                 }
                 if (outline!= null)
                 {
                     g.setColor(outline);
                 }
-                g.drawOval(x1,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                g.drawOval(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
 
             }
             else if (line[0].equals("PLOT"))
@@ -239,18 +317,22 @@ else if (buttonString.equals(saveAsBrn.getText()))
                 int y1 = (int)(Double.parseDouble(line[2])*(HEIGHT-yoffset));
                 int x2 = (int)(Double.parseDouble(line[3])*(WIDTH-xoffset));
                 int y2 = (int)(Double.parseDouble(line[4])*(HEIGHT-yoffset));
-                int x=(x1+x2)/2;
+                int x=x1;
+                if (x1>x2){
+                   x= x2;
+                }
+
                 int y=(y1+y2)/2;
 
                 if (fill!= null){
                     g.setColor(fill);
-                    g.fillRect(x1,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                    g.fillRect(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
                 }
                 if (outline!= null){
                     g.setColor(outline);
                 }
 
-                g.drawRect(x1,y1,Math.abs(x2-x1),Math.abs(y2-y1));
+                g.drawRect(x,y1,Math.abs(x2-x1),Math.abs(y2-y1));
             }
             else if (line[0].equals("POLYGON"))
             {
@@ -300,62 +382,105 @@ else if (buttonString.equals(saveAsBrn.getText()))
 
     private void createGUI() {
         setSize(WIDTH, HEIGHT);
-      //  setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        pnlDisplay = createPanel(Color.white);
-        pnlDisplay.addMouseListener(this );
-        pnlDisplay.addComponentListener(this);
-        pnlEast = createPanel(Color.lightGray);
-        pnlUp = createPanel(Color.lightGray);
-        pnlWest = createPanel(Color.lightGray);
-        pnlBtn = createPanel(Color.lightGray);
-       s=new Shape();
-        //ChooseFile chsr = new ChooseFile();
-        OpenBtn = new JButton("Select file");
-        plotbtn = new JButton("Plot");
-        saveAsBrn= new JButton("Save as..");
-        linebtn = new JButton("LINE");
-        rectbtn = new JButton("RECTANGLE");
-        elipsbtn = new JButton("Ellipse");
-        OpenBtn.addActionListener(this);
-        saveAsBrn.addActionListener(this);
-        plotbtn.addActionListener(this);
-       linebtn.addActionListener(this);
-        rectbtn.addActionListener(this);
-        elipsbtn.addActionListener(this);
-        saveAsBrn.setEnabled(false);
-        linebtn.setEnabled(false);
-        rectbtn.setEnabled(false);
-        plotbtn.setEnabled(false);
-        elipsbtn.setEnabled(false);
-        linebtn.setBackground(Color.gray);
-        plotbtn.setBackground(Color.gray);
-        rectbtn.setBackground(Color.gray);
-        elipsbtn.setBackground(Color.gray);
+        s=new Shape();
+        txt = new JLabel("Right click Mouse to draw polygon");
+        txt.setBackground(Color.red);
+       txt.setVisible(false);
 
-
-
-
-        getContentPane().add(pnlDisplay,BorderLayout.CENTER);
-        getContentPane().add(pnlEast,BorderLayout.EAST);
-        getContentPane().add(pnlUp,BorderLayout.NORTH);
-        getContentPane().add(pnlWest,BorderLayout.WEST);
-        getContentPane().add(pnlBtn,BorderLayout.SOUTH);
+        setUpPanels();
+        setUpButtons();
         pnlDisplay.add(s);
-        pnlUp.add(OpenBtn);
-        pnlUp.add(saveAsBrn);
-        pnlWest.setLayout(new BoxLayout(pnlWest,BoxLayout.Y_AXIS));
-        pnlWest.add(plotbtn);
-        pnlWest.add(linebtn);
-        pnlWest.add(rectbtn);
-        pnlWest.add(elipsbtn);
 
 
 
 
         setVisible(true);
         repaint();
+
+    }
+
+    private void setUpPanels() {
+        setLayout(new BorderLayout());
+        pnlDisplay = createPanel(Color.white);
+        pnlDisplay.addMouseListener(this );
+        pnlDisplay.addComponentListener(this);
+        pnlEast = createPanel(Color.lightGray);
+        pnlUp = createPanel(Color.lightGray);
+        pnlWest = createPanel(Color.gray);
+        pnlBtn = createPanel(Color.lightGray);
+        getContentPane().add(pnlDisplay,BorderLayout.CENTER);
+        getContentPane().add(pnlEast,BorderLayout.EAST);
+        getContentPane().add(pnlUp,BorderLayout.NORTH);
+        getContentPane().add(pnlWest,BorderLayout.WEST);
+        getContentPane().add(pnlBtn,BorderLayout.SOUTH);
+        pnlBtn.add(txt);
+    }
+
+    private void setUpButtons() {
+        OpenBtn =  new JButton("Select file");
+        saveAsBrn= new JButton("Save as..");
+        plotBtn =  new JButton(" Plot");
+        linebtn =  new JButton("  LINE");
+        rectBtn =  new JButton("Rectangle");
+        elipsBtn = new JButton("  Ellipse");
+        ployBtn  = new JButton("Polygon");
+        fillBtn  = new JButton("Fill shape");
+        noFillBtn = new JButton("Fill off");
+        penBtn   = new JButton("Pen Colour");
+        unDoBtn  = new JButton("UNDO");
+        OpenBtn.addActionListener(this);
+        saveAsBrn.addActionListener(this);
+        plotBtn.addActionListener(this);
+        linebtn.addActionListener(this);
+        rectBtn.addActionListener(this);
+        elipsBtn.addActionListener(this);
+        ployBtn.addActionListener(this);
+        fillBtn.addActionListener(this);
+        penBtn.addActionListener(this);
+        unDoBtn.addActionListener(this);
+        noFillBtn.addActionListener(this);
+        plotBtn.setBorderPainted(false);
+        linebtn.setBorderPainted(false);
+        elipsBtn.setBorderPainted(false);
+        rectBtn.setBorderPainted(false);
+        ployBtn.setBorderPainted(false);
+        fillBtn.setBorderPainted(false);
+        penBtn.setBorderPainted(false);
+        unDoBtn.setBorderPainted(false);
+        noFillBtn.setBorderPainted(false);
+        saveAsBrn.setEnabled(false);
+        linebtn.setEnabled(false);
+        rectBtn.setEnabled(false);
+        plotBtn.setEnabled(false);
+        elipsBtn.setEnabled(false);
+        ployBtn.setEnabled(false);
+        fillBtn.setEnabled(false);
+        penBtn.setEnabled(false);
+        unDoBtn.setEnabled(false);
+        noFillBtn.setEnabled(false);
+        noFillBtn.setBorderPainted(false);
+        linebtn.setBackground(Color.gray);
+        plotBtn.setBackground(Color.gray);
+        rectBtn.setBackground(Color.gray);
+        elipsBtn.setBackground(Color.gray);
+        ployBtn.setBackground(Color.gray);
+        fillBtn.setBackground(Color.gray);
+        penBtn.setBackground(Color.gray);
+        unDoBtn.setBackground(Color.gray);
+        noFillBtn.setBackground(Color.gray);
+        pnlUp.add(OpenBtn);
+        pnlUp.add(saveAsBrn);
+        pnlWest.setLayout(new BoxLayout(pnlWest,BoxLayout.Y_AXIS));
+        pnlWest.add(unDoBtn);
+        pnlWest.add(plotBtn);
+        pnlWest.add(linebtn);
+        pnlWest.add(rectBtn);
+        pnlWest.add(elipsBtn);
+        pnlWest.add(ployBtn);
+        pnlWest.add(fillBtn);
+        pnlWest.add(noFillBtn);
+        pnlWest.add(penBtn);
 
     }
 
@@ -377,15 +502,15 @@ else if (buttonString.equals(saveAsBrn.getText()))
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        double x = e.getX();
+        x/= WIDTH;
+        double y = e.getY();
+        y/=HEIGHT;
 
         if (plot){
             String[] line = new String[3];
             line[0]="PLOT";
-            double x = e.getX();
-            x/= WIDTH;
-            double y = e.getY();
-            y/=HEIGHT;
+
 
             line[1]=  String.format("%.5f", x);
             line[2]=  String.format("%.5f", y);
@@ -393,6 +518,30 @@ else if (buttonString.equals(saveAsBrn.getText()))
             g = makeGraphics(content);
             s.paintComponent(g);
             //System.out.println(content);
+
+        }else if (ploy){
+            if (e.getButton()==1){
+                pPoints.add(x);
+                pPoints.add(y);
+            }
+            else if (e.getButton()==3){
+                String[] line = new String[pPoints.size()+1];
+                line[0]="POLYGON";
+                int i =1;
+                for (double p : pPoints){
+                    line[i] = String.format("%.5f", p);
+                    i++;
+                }
+
+                pPoints.clear();
+                content.add(line);
+                g = makeGraphics(content);
+                s.paintComponent(g);
+
+
+            }
+
+
 
         }
 
@@ -405,6 +554,7 @@ else if (buttonString.equals(saveAsBrn.getText()))
      */
     @Override
     public void mousePressed(MouseEvent e) {
+
          x1 = e.getX();
       //  x/= WIDTH;
          y1 = e.getY();
@@ -541,5 +691,15 @@ else if (buttonString.equals(saveAsBrn.getText()))
     }
 
 
+    /**
+     * An undoable edit happened
+     *
+     * @param e an {@code UndoableEditEvent} object
+     */
+    @Override
+    public void undoableEditHappened(UndoableEditEvent e) {
+        System.out.println(e);
+
+    }
 }
 
