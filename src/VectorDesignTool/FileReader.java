@@ -5,9 +5,16 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class FileReader {
+
     File fl;
     Scanner scan ;
     private List<String[]> content = new ArrayList<>();
+
+    /**
+     * takes a file and reads its content and converts them into a list of arrays of string
+     * @param fl file
+     * @throws Exception
+     */
     FileReader(File fl) throws Exception
     {
         this.fl = fl;
@@ -23,6 +30,10 @@ public class FileReader {
 
     }
 
+    /**
+     * gets a list of arrays with every array having the content of a VEC command line of the loaded drawing
+     * @return list of string arrays
+     */
     public List<String[]> getcontent(){
         return content;
     }
