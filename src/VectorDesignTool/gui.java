@@ -580,15 +580,19 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
      */
     @Override
     public void mouseReleased(MouseEvent e) {
+        int x2 = e.getX();
+        int y2 = e.getY();
+        if (x2>WIDTH)    x2 = WIDTH;
+        if (x2<0) x2=0;
+        if (y2>HEIGHT) y2=HEIGHT;
+        if (y2<0) y2=0;
+
+
+
 
         if (line) {
             String[] line = new String[5];
             line[0] = "LINE";
-            int x2 = e.getX();
-            int y2 = e.getY();
-//
-
-
             line[1] = String.format("%.5f", (double) x1 / WIDTH);
             line[2] = String.format("%.5f", (double) y1 / HEIGHT);
             line[3] = String.format("%.5f", (double) x2 / WIDTH);
@@ -599,9 +603,6 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
         } else if (rect) {
             String[] line = new String[5];
             line[0] = "RECTANGLE";
-            int x2 = e.getX();
-            int y2 = e.getY();
-
             line[1] = String.format("%.5f", (double) x1 / WIDTH);
             line[2] = String.format("%.5f", (double) y1 / HEIGHT);
             line[3] = String.format("%.5f", (double) x2 / WIDTH);
@@ -613,9 +614,6 @@ public class gui extends JFrame implements ActionListener, MouseListener, Compon
         } else if (elipse) {
             String[] line = new String[5];
             line[0] = "ELLIPSE";
-            int x2 = e.getX();
-            int y2 = e.getY();
-
             line[1] = String.format("%.5f", (double) x1 / WIDTH);
             line[2] = String.format("%.5f", (double) y1 / HEIGHT);
             line[3] = String.format("%.5f", (double) x2 / WIDTH);
