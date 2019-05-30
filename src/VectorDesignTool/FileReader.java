@@ -7,7 +7,7 @@ import java.util.*;
 public class FileReader {
     File fl;
     Scanner scan ;
-    List<String[]> content = new ArrayList<>();
+    private List<String[]> content = new ArrayList<>();
     FileReader(File fl) throws Exception
     {
         this.fl = fl;
